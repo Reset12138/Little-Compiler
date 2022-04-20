@@ -1,113 +1,165 @@
 #include "scanner.h"
+#include "pair.h"
 
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
+
+#define SYMBOL_TABLE_SIZE 100
 
 
 struct symbol_table {
-    char name[16];
-    int type;
-} symbol_table[100];
+	char name[16];
+	int type;
+} symbol_table[SYMBOL_TABLE_SIZE];
 
-int is_char(char c) {
-    if (isalpha(c) || c == '_') {
-        return 1;
-    } else {
-        return 0;
-    }
+
+void print_symbol_table(int size_symbol_table) {
+	for (int i = 0; i < size_symbol_table; i++) {
+		printf("(%s, %d)\n", symbol_table[i].name, symbol_table[i].type);
+	}
 }
 
-void get_legal_identifier(const char *str) {
+int is_operator(const char token) {
+	static const char keywords_list[] = { '=', '+', '-', '*', '/', '(', ')', '[', ']', '{', '}', ',', ':', ';', '>', '<' };
 
-    int i = 0;
-    int index_symbol_table = 0;
-    while (str[i] != '\0') {
+	for (size_t i = 0; i < sizeof(keywords_list); i++) {
+		if (token == keywords_list[i])
+			return 1;
 
-        if (is_char(str[i])) {
-            int start = i;
-            while (!isspace(str[i])) {
-                i++;
-            }
-            if (i - start > 15)
-                continue;
-            char token[16];
-            memcpy(token, str + start, i - start);
-            token[i - start] = '\0';
-            if (is_keyword(token) == 0) {
-                strcpy(symbol_table[index_symbol_table].name, token);
-                index_symbol_table++;
-            }
+	}
+	return 0;
+}
 
-        } else {
-            i++;
-        }
-    }
+int is_alpha(const char c) {
+	if (isalpha(c) || c == '_') {
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
 
-    for (i = 0; i < index_symbol_table; i++) {
-        printf("%s\n", symbol_table[i].name);
-    }
+int is_valid(const char c) {
+	if (isdigit(c) || is_alpha(c) || is_operator(c)) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
 
+int is_number(const char* str) {
+	for (int i = 0; str[i] != '\0'; i++) {
+		if (isdigit(str[i]) == 0) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
+
+int get_pair(const char* str) {
+
+	int i = 0;
+	static int index_symbol_table = 0;
+	static int index_pair = 0;
+	while (str[i] != '\0') {
+
+		if (isdigit(str[i])) { // 如果是数字
+
+			int start = i;
+
+			while (isdigit(str[i])) {
+				i++;
+			}
+			if (i - start > 15)
+				continue;
+			char token[16];
+			memcpy(token, str + start, i - start);
+			token[i - start] = '\0';
+
+			pair[index_pair].type_id = TYPE_NUMBER;
+			pair[index_pair].attr = atoi(token);
+			index_pair++;
+
+		}
+		else if (is_operator(str[i])) { // 如果是运算符
+
+			int start = i;
+
+			if (is_operator(str[i + 1]) == 1) {
+				char tmp[] = { str[i], str[i + 1], '\0' };
+				if (is_operator(tmp) == 1)
+					i++;
+			}
+			i++;
+			char token[4];
+			memcpy(token, str + start, i - start);
+			token[i - start] = '\0';
+			pair[index_pair].type_id = get_type_id(token);
+			strcpy(pair[index_pair].str, token);
+			index_pair++;
+
+		}
+		else if (is_alpha(str[i])) { // 如果是字符串
+			int start = i;
+
+			while (is_alpha(str[i]) || isdigit(str[i])) {
+				i++;
+			}
+			if (i - start > 15)
+				continue;
+			char token[16];
+			memcpy(token, str + start, i - start);
+			token[i - start] = '\0';
+			if (is_keyword(token) == 1) { // 如果是关键字
+				pair[index_pair].type_id = get_type_id(token);
+				strcpy(pair[index_pair].str, token);
+				index_pair++;
+			}
+			else if (is_keyword(token) == 0) { // 如果是标识符
+				strcpy(symbol_table[index_symbol_table].name, token);
+
+				pair[index_pair].type_id = TYPE_IDENTIFIER;
+				pair[index_pair].attr = index_symbol_table;
+				strcpy(pair[index_pair].str, token);
+
+
+				index_symbol_table++;
+				index_pair++;
+			}
+
+
+		}
+		else {
+			i++;
+		}
+	}
+
+	for (i = 0; i < index_symbol_table; i++) {
+		printf("%s\n", symbol_table[i].name);
+	}
+
+	return index_pair;
 }
 
 int main() {
-    const char *a = "test double 3312321 dsad21 _12345678912345 _123456789123456 int\n";
+	const char* a = "main()\n{\nint i = 10;\nwhile (i) i = i - 1;\n}";
+	//const char *b = "while 6345";
 
-    get_legal_identifier(a);
-
+	int size_pair = get_pair(a);
+	print_pair(size_pair);
 }
 
-int is_keyword(const char *token) {
-    static const char *keywords_list[] = {
-            "auto",
-            "break",
-            "case",
-            "char",
-            "const",
-            "continue",
-            "default",
-            "do",
-            "double",
-            "else",
-            "enum",
-            "extern",
-            "float",
-            "for",
-            "goto",
-            "if",
-            "inlineinline",
-            "int",
-            "long",
-            "register",
-            "restrictrestrict",
-            "return",
-            "short",
-            "signed",
-            "sizeof",
-            "static",
-            "struct",
-            "switch",
-            "typedef",
-            "union",
-            "unsigned",
-            "void",
-            "volatile",
-            "while",
-            "_Alignas_Alignas",
-            "_Alignof_Alignof",
-            "_Atomic_Atomic",
-            "_Bool_Bool",
-            "_Complex_Complex",
-            "_Generic_Generic",
-            "_Imaginary_Imaginary",
-            "_Noreturn_Noreturn",
-            "_Static_assert_Static_assert",
-            "_Thread_local_Thread_local"
-    };
+int is_keyword(const char* token) {
+	static const char* keywords_list[] = { "main", "if", "else", "int", "char", "for", "while" };
 
-    for (size_t i = 0; i < sizeof(keywords_list) / sizeof(*keywords_list); i++) {
-        if (strcmp(token, keywords_list[i]) == 0)
-            return 1;
-    }
-    return 0;
+	for (size_t i = 0; i < sizeof(keywords_list) / sizeof(*keywords_list); i++) {
+		if (strcmp(token, keywords_list[i]) == 0)
+			return 1;
+
+	}
+	return 0;
 }

@@ -6,6 +6,6 @@
 #define LITTLE_COMPILER_SCANNER_H
 
 int is_keyword(const char *token);
-int is_char(char c);
+int is_valid(char c);
 
 #endif //LITTLE_COMPILER_SCANNER_H
