@@ -1,0 +1,25 @@
+1
+22/
+333//00000
+4444//
+55555
+//000
+7777777/*000
+
+0//00*/88888
+        //test
+
+#include "stdio.h"
+#include "preprocessing.h"
+
+int main(int argc, char *argv[]) {
+    int x; //123
+    /*
+    int y
+    */
+    printf("%d//1/*23*/1",x);
+
+
+    return 0;
+}
+

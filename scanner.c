@@ -82,6 +82,7 @@ int get_pair(const char* str) {
 
 			pair[index_pair].type_id = TYPE_NUMBER;
 			pair[index_pair].attr = atoi(token);
+            strcpy(pair[index_pair].str, token);
 			index_pair++;
 
 		}

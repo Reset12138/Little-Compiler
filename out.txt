@@ -1,0 +1,24 @@
+1
+22/
+333
+4444
+55555
+7777777
+ 
+       88888
+        
+
+#include "stdio.h"
+#include "preprocessing.h"
+
+int main(int argc, char *argv[]) {
+    int x; 
+    
+          
+      
+    printf("%d//1/*23*/1",x);
+
+
+    return 0;
+}
+

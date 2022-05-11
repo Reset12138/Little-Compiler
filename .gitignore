@@ -1,7 +1,8 @@
 
 # Created by https://www.toptal.com/developers/gitignore/api/clion,cmake
 # Edit at https://www.toptal.com/developers/gitignore?templates=clion,cmake
-
+.vs
+out/
 .idea/
 cmake-build-*/
 

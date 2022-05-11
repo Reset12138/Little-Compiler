@@ -2,6 +2,8 @@
 #include<stdlib.h>
 #include<ctype.h>
 
+#include"recursive_descent.h"
+
 static int index = -1;
 static char get_next() {
 
@@ -17,46 +19,15 @@ void roll_back() {
 	index--;
 }
 
-typedef struct EXPR Expr;
-typedef struct TERM1 Term1;
+static char* get_next1() {
 
-typedef struct {
-	int type;
-	char id;
-	int number;
-	Expr* expr;
-}Factor;
+    const char exp[] = "a+b*2/4-(b+c)*3\0";
+    //const char exp[] = "a+b*2/4*3\0";
+    //const char exp[] = "*2*2";
 
-typedef struct TERM1 {
-	int type;
-	char mulop;
-	Factor* factor;
-	Term1* term1;
-}Term1;
-
-typedef struct {
-	Factor* factor;
-	Term1* term1;
-}Term;
-
-
-typedef struct EXPR1 {
-	int type;
-	char addop;
-	Term* term;
-	struct EXPR1* expr1;
-}Expr1;
-
-typedef struct EXPR {
-	Term* term;
-	Expr1* expr1;
-}Expr;
-
-Factor* factor();
-Term1* term1();
-Term* term();
-Expr1* expr1();
-Expr* expr();
+    index++;
+    return pair[index].str;
+}
 
 Factor* factor() {
 	char c = get_next();
@@ -128,11 +99,19 @@ Expr* expr() {
 	return node;
 }
 
-void dfs_factor(Factor* factor);
-void dfs_term1(Term1* term1);
-void dfs_term(Term* term);
-void dfs_expr1(Expr1* expr1);
-void dfs_expr(Expr* expr);
+Relop *relop() {
+    Relop *node = (Relop *) malloc(sizeof(Relop));
+
+    return node;
+}
+
+Else *else1() {
+    Else *node = (Else *) malloc(sizeof(Else));
+
+    node->stmt = stmt();
+
+    return node;
+}
 
 void dfs_factor(Factor* factor) {
 	if (factor->type == 1) {
