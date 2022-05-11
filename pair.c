@@ -1,6 +1,8 @@
-#include "pair.h"
 #include <stdio.h>
 #include <string.h>
+#include "pair.h"
+
+Pair pair[PAIR_SIZE];
 
 void print_pair(int size_pair) {
 	for (int i = 0; i < size_pair; i++) {

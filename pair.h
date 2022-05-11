@@ -36,11 +36,11 @@
 #define PAIR_SIZE 1000
 
 
-struct pair {
+typedef struct {
     int type_id;
     int attr;
     char str[16];
-} pair[PAIR_SIZE];
+} Pair;
 
 void print_pair(int size_pair);
 

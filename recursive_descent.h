@@ -1,7 +1,3 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<ctype.h>
-
 typedef struct FACTOR Factor;
 typedef struct TERM1 Term1;
 typedef struct TERM Term;
@@ -88,6 +84,14 @@ typedef struct STMTS {
     Stmts1 *stmts1;
 } Stmts;
 
+typedef struct NAME {
+    char id[16];
+} Name;
+
+typedef struct TYPE {
+    int typeid;
+} Type;
+
 typedef struct NAMELIST1 {
     int type;
     Name *name;
@@ -131,6 +135,21 @@ Expr1 *expr1();
 
 Expr *expr();
 
+Relop *relop();
+
+Bool *bool();
+Else *else_();
+Stmt *stmt();
+Stmts1 *stmts1();
+Stmts *stmts();
+Name *name();
+Type *type();
+Namelist1 *namelist1();
+Namelist *namelist();
+Decl *decl();
+Decls1 *decls1();
+Decls *decls();
+Block *block();
 
 void dfs_factor(Factor *factor);
 
