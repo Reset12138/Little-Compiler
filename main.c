@@ -14,12 +14,14 @@ int main(int argc, char *argv[]) {
 //    fclose(in);
 //    fclose(out);
 
-//    const char *a = "{\nint x,y;\nif(x==0)\nx=y-1;\n}";
-    const char *a = "a+b*2/4-(b+c)*3\0";
+    const char *a = "{\nint x,y;\nint z;\nif(x==0)\nx=y-1;else x=y-2;}";
+//    const char *a = "a+b*2/4-(b+c)*3\0";
     int size_pair = get_pair(a);
     print_pair(size_pair);
 
-	Expr* p = expr();
-
+//	Expr* p = expr();
+//	dfs_expr(p);
+    Block *p = block();
+    dfs_block(p);
     return 0;
 }

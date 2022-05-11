@@ -6,14 +6,10 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-#define SYMBOL_TABLE_SIZE 100
 
 extern Pair pair[PAIR_SIZE];
 
-struct symbol_table {
-    char name[16];
-    int type;
-} symbol_table[SYMBOL_TABLE_SIZE];
+Symbol_table symbol_table[SYMBOL_TABLE_SIZE];
 
 void print_symbol_table(int size_symbol_table) {
     for (int i = 0; i < size_symbol_table; i++) {
@@ -132,9 +128,9 @@ int get_pair(const char *str) {
         }
     }
 
-    //for (i = 0; i < index_symbol_table; i++) {
-    //	printf("%s\n", symbol_table[i].name);
-    //}
+    for (i = 0; i < index_symbol_table; i++) {
+    	printf("%s\n", symbol_table[i].name);
+    }
 
     return index_pair;
 }

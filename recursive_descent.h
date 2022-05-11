@@ -51,12 +51,12 @@ typedef struct EXPR {
 } Expr;
 
 typedef struct RELOP {
-    char op[2];
+    char op[3];
 } Relop;
 
 typedef struct BOOL {
     Expr *expr_1;
-    char op[2];
+    Relop *relop;
     Expr *expr_2;
 } Bool;
 
@@ -67,6 +67,7 @@ typedef struct ELSE {
 
 typedef struct STMT {
     int type;
+    char id[16];
     Expr *expr;
     Bool *bool;
     Stmt *stmt;
@@ -89,13 +90,13 @@ typedef struct NAME {
 } Name;
 
 typedef struct TYPE {
-    int typeid;
+    char type[16];
 } Type;
 
 typedef struct NAMELIST1 {
     int type;
     Name *name;
-    Namelist *namelist;
+    Namelist1 *namelist1;
 } Namelist1;
 
 typedef struct NAMELIST {
@@ -138,17 +139,29 @@ Expr *expr();
 Relop *relop();
 
 Bool *bool();
+
 Else *else_();
+
 Stmt *stmt();
+
 Stmts1 *stmts1();
+
 Stmts *stmts();
+
 Name *name();
+
 Type *type();
+
 Namelist1 *namelist1();
+
 Namelist *namelist();
+
 Decl *decl();
+
 Decls1 *decls1();
+
 Decls *decls();
+
 Block *block();
 
 void dfs_factor(Factor *factor);
@@ -160,3 +173,31 @@ void dfs_term(Term *term);
 void dfs_expr1(Expr1 *expr1);
 
 void dfs_expr(Expr *expr);
+
+void dfs_relop(Relop *relop);
+
+void dfs_bool(Bool *bool);
+
+void dfs_else_(Else *else_);
+
+void dfs_stmt(Stmt *stmt);
+
+void dfs_stmts1(Stmts1 *stmts1);
+
+void dfs_stmts(Stmts *stmts);
+
+void dfs_name(Name *name);
+
+void dfs_type(Type *type);
+
+void dfs_namelist1(Namelist1 *namelist1);
+
+void dfs_namelist(Namelist *namelist);
+
+void dfs_decl(Decl *decl);
+
+void dfs_decls1(Decls1 *decls1);
+
+void dfs_decls(Decls *decls);
+
+void dfs_block(Block *block);
