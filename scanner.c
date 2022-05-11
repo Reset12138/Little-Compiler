@@ -22,10 +22,10 @@ void print_symbol_table(int size_symbol_table) {
 }
 
 int is_operator(const char token) {
-	static const char keywords_list[] = { '=', '+', '-', '*', '/', '(', ')', '[', ']', '{', '}', ',', ':', ';', '>', '<' };
+	static const char operator_list[] = { '=', '+', '-', '*', '/', '(', ')', '[', ']', '{', '}', ',', ':', ';', '>', '<' };
 
-	for (size_t i = 0; i < sizeof(keywords_list); i++) {
-		if (token == keywords_list[i])
+	for (size_t i = 0; i < sizeof(operator_list); i++) {
+		if (token == operator_list[i])
 			return 1;
 
 	}
@@ -91,7 +91,7 @@ int get_pair(const char* str) {
 
 			if (is_operator(str[i + 1]) == 1) {
 				char tmp[] = { str[i], str[i + 1], '\0' };
-				if (is_operator(tmp) == 1)
+				if (get_type_id(tmp) != 0)
 					i++;
 			}
 			i++;
@@ -126,21 +126,19 @@ int get_pair(const char* str) {
 				pair[index_pair].attr = index_symbol_table;
 				strcpy(pair[index_pair].str, token);
 
-
 				index_symbol_table++;
 				index_pair++;
+
 			}
-
-
 		}
 		else {
 			i++;
 		}
 	}
 
-	for (i = 0; i < index_symbol_table; i++) {
-		printf("%s\n", symbol_table[i].name);
-	}
+	//for (i = 0; i < index_symbol_table; i++) {
+	//	printf("%s\n", symbol_table[i].name);
+	//}
 
 	return index_pair;
 }

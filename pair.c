@@ -13,6 +13,7 @@ void print_pair(int size_pair) {
 	}
 }
 
+// 如果不属于任何一种类型则返回0
 int get_type_id(const char* str) {
 	if (strcmp(str, "main") == 0) {
 		return TYPE_MAIN;
@@ -94,5 +95,8 @@ int get_type_id(const char* str) {
 	}
 	else if (strcmp(str, "!=") == 0) {
 		return TYPE_NOT_EQUAL;
+	}
+	else {
+		return 0;
 	}
 }
