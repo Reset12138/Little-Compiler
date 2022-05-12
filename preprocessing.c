@@ -1,6 +1,6 @@
-#include "stdio.h"
+#include <stdio.h>
 
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 4096
 
 void preprocessing(FILE *in, FILE *out) {
 
@@ -49,8 +49,5 @@ void preprocessing(FILE *in, FILE *out) {
         if (buffer[0] != '\n') // 如果这一行存在除了换行符之外的字符
             fputs(buffer, out);
     }
-
-    fclose(in);
-    fclose(out);
 
 }

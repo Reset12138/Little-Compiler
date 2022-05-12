@@ -128,9 +128,9 @@ int get_pair(const char *str) {
         }
     }
 
-    for (i = 0; i < index_symbol_table; i++) {
-    	printf("%s\n", symbol_table[i].name);
-    }
+//    for (i = 0; i < index_symbol_table; i++) {
+//    	printf("%s\n", symbol_table[i].name);
+//    }
 
     return index_pair;
 }

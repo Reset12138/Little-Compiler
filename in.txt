@@ -1,25 +1,19 @@
-1
-22/
-333//00000
-4444//
-55555
+//00000
+//
 //000
-7777777/*000
+/*000
 
-0//00*/88888
+0//00*/
         //test
-
-#include "stdio.h"
-#include "preprocessing.h"
-
-int main(int argc, char *argv[]) {
-    int x; //123
+{
+    int x,y;//123
     /*
-    int y
+    int z;
     */
-    printf("%d//1/*23*/1",x);
-
-
-    return 0;
+    if(x==0)
+        x=y-1;
+    else
+        x=y-2;
+    while(y==1)
+        x=x+10;
 }
-

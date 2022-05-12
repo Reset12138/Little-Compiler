@@ -1,27 +1,37 @@
 #include <stdlib.h>
-#include "stdio.h"
-//#include "preprocessing.h"
+#include <stdio.h>
+#include "preprocessing.h"
 #include "recursive_descent.h"
-#include "pair.h"
 #include "scanner.h"
 
 
-int main(int argc, char *argv[]) {
+int main() {
 
-//    FILE *in = fopen("in.txt", "r");
-//    FILE *out = fopen("out.txt", "w");
-//    preprocessing(in, out);
-//    fclose(in);
-//    fclose(out);
+    FILE *in = fopen("in.txt", "r");
+    FILE *f = fopen("preprocessed.txt", "rw");
+    preprocessing(in, f);
+    fclose(in);
 
-    const char *a = "{\nint x,y;\nint z;\nif(x==0)\nx=y-1;else x=y-2;\nwhile(y==1)x=x+10;}";
-//    const char *a = "a+b*2/4-(b+c)*3\0";
-    int size_pair = get_pair(a);
-    print_pair(size_pair);
+    char *buffer = 0;
+    long length;
 
-//	Expr* p = expr();
-//	dfs_expr(p);
-    Block *p = block();
-    dfs_block(p);
+    if (f) {
+        fseek(f, 0, SEEK_END);
+        length = ftell(f);
+        fseek(f, 0, SEEK_SET);
+        buffer = malloc(length);
+        if (buffer) {
+            fread(buffer, 1, length, f);
+        }
+        fclose(f);
+    }
+
+    if (buffer) {
+        int size_pair = get_pair(buffer);
+//        print_pair(size_pair);
+        Block *p = block();
+        dfs_block(p);
+        printf("\nGet AST in mshang.ca/syntree/\n");
+    }
     return 0;
 }
