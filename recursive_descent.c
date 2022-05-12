@@ -12,10 +12,6 @@ extern Symbol_table symbol_table[SYMBOL_TABLE_SIZE];
 
 static int index = -1;
 
-//int is_in_symbol_table{
-//
-//};
-
 char *get_next() {
     index++;
     return pair[index].str;
@@ -26,7 +22,10 @@ void roll_back() {
 }
 
 void error() {
-    printf("error near %s%s%s", get_next(), get_next(), get_next());
+    printf("%d\n", index);
+    roll_back();
+    char *error_msg = get_next();
+    printf("error near %s", error_msg);
     exit(0);
 }
 
@@ -40,7 +39,10 @@ Factor *factor() {
     } else if (strcmp(c, "(") == 0) {
         node->type = 3;
         node->expr = expr();
-        get_next();
+        char *tmp = get_next();
+        if (strcmp(tmp, ")") != 0) {
+            error();
+        }
     } else {
         node->type = 1;
         node->id = *c;
@@ -147,16 +149,28 @@ Stmt *stmt() {
         get_next();
     } else if (strcmp(c, "if") == 0) {
         node->type = 1;
-        get_next();
+        char *tmp1 = get_next();
+        if (strcmp(tmp1, "(") != 0) {
+            error();
+        }
         node->bool = bool();
-        get_next();
+        char *tmp2 = get_next();
+        if (strcmp(tmp2, ")") != 0) {
+            error();
+        }
         node->stmt = stmt();
         node->else_ = else_();
     } else if (strcmp(c, "while") == 0) {
         node->type = 2;
-        get_next();
+        char *tmp3 = get_next();
+        if (strcmp(tmp3, "(") != 0) {
+            error();
+        }
         node->bool = bool();
-        get_next();
+        char *tmp4 = get_next();
+        if (strcmp(tmp4, ")") != 0) {
+            error();
+        }
         node->stmt = stmt();
     } else {
         node->type = 3;
@@ -267,12 +281,20 @@ Decls *decls() {
 Block *block() {
     Block *node = (Block *) malloc(sizeof(Block));
 
-    get_next();
+    char *tmp = get_next();
+    if (strcmp(tmp, "{") != 0) {
+        error();
+    }
     node->decls = decls();
     node->stmts = stmts();
-    get_next();
+    char *tmp1 = get_next();
+    if (strcmp(tmp1, "}") != 0) {
+        error();
+    }
     return node;
 }
+
+// 生成语法树 mshang.ca/syntree/
 
 void dfs_factor(Factor *factor) {
     if (factor->type == 1) {
