@@ -6,10 +6,12 @@
 0//00*/
         //test
 {
-    int x,y;//123
+
+    int x, y, z;//123
     /*
     int z;
     */
+    x = x + y * z;
     if(x==0)
         x=y-1;
     else

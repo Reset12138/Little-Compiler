@@ -163,31 +163,34 @@ Stmt *stmt() {
     if (is_type_0 == 1) {
         node->type = 0;
         strcpy(node->id, c);
-        get_next();
+        get_next(); // 匹配"="
         node->expr = expr();
-        get_next();
+        char *tmp1 = get_next();
+        if (strcmp(tmp1, ";") != 0) {
+            error();
+        }
     } else if (strcmp(c, "if") == 0) {
         node->type = 1;
-        char *tmp1 = get_next();
-        if (strcmp(tmp1, "(") != 0) {
+        char *tmp2 = get_next();
+        if (strcmp(tmp2, "(") != 0) {
             error();
         }
         node->bool = bool();
-        char *tmp2 = get_next();
-        if (strcmp(tmp2, ")") != 0) {
+        char *tmp3 = get_next();
+        if (strcmp(tmp3, ")") != 0) {
             error();
         }
         node->stmt = stmt();
         node->else_ = else_();
     } else if (strcmp(c, "while") == 0) {
         node->type = 2;
-        char *tmp3 = get_next();
-        if (strcmp(tmp3, "(") != 0) {
+        char *tmp4 = get_next();
+        if (strcmp(tmp4, "(") != 0) {
             error();
         }
         node->bool = bool();
-        char *tmp4 = get_next();
-        if (strcmp(tmp4, ")") != 0) {
+        char *tmp5 = get_next();
+        if (strcmp(tmp5, ")") != 0) {
             error();
         }
         node->stmt = stmt();
@@ -203,7 +206,9 @@ Stmts1 *stmts1() {
     Stmts1 *node = (Stmts1 *) malloc(sizeof(Stmts1));
 
     char *c = get_next();
-    if (strcmp(c, "id") == 0 || strcmp(c, "if") == 0 || strcmp(c, "while") == 0 || strcmp(c, "{") == 0) {
+    char *tmp = get_next(); // 判断第二个字符是否为"="
+    roll_back();
+    if (strcmp(tmp, "=") == 0 || strcmp(c, "if") == 0 || strcmp(c, "while") == 0 || strcmp(c, "{") == 0) {
         roll_back();
         node->type = 0;
         node->stmt = stmt();

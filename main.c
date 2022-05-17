@@ -3,12 +3,13 @@
 #include "preprocessing.h"
 #include "recursive_descent.h"
 #include "scanner.h"
+#include "pair.h"
 
 
 int main() {
 
     FILE *in = fopen("in.txt", "r");
-    FILE *f = fopen("preprocessed.txt", "rw");
+    FILE *f = fopen("preprocessed.txt", "w+");
     preprocessing(in, f);
     fclose(in);
 
