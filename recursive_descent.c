@@ -29,6 +29,10 @@ void error() {
     exit(0);
 }
 
+void get_code(char op, char operand1, char operand2) {
+    printf("(%c, %c, %c)\n", op, operand1, operand2);
+}
+
 Factor *factor() {
     char *c = get_next();
 
@@ -36,6 +40,8 @@ Factor *factor() {
     if (*(c + 1) == '\0' && isdigit(*c)) {
         node->type = 2;
         node->number = *c - '0';
+
+        node->systhesized = *c;
     } else if (strcmp(c, "(") == 0) {
         node->type = 3;
         node->expr = expr();
@@ -43,24 +49,32 @@ Factor *factor() {
         if (strcmp(tmp, ")") != 0) {
             error();
         }
+
+        node->systhesized = node->expr->systhesized;
     } else {
         node->type = 1;
         node->id = *c;
+
+        node->systhesized = *c;
     }
 
     return node;
 }
 
-Term1 *term1() {
+Term1 *term1(char to_inherited) {
     char *c = get_next();
     Term1 *node = (Term1 *) malloc(sizeof(Term1));
+    node->inherited = to_inherited;
     if (strcmp(c, "*") == 0 || strcmp(c, "/") == 0) {
         node->type = 1;
         node->mulop = *c;
         node->factor = factor();
-        node->term1 = term1();
+        get_code(*c, node->factor->systhesized, node->inherited);
+        node->term1 = term1(node->inherited);
+        node->systhesized = node->term1->systhesized;
     } else {
         node->type = 2;
+        node->systhesized = node->inherited;
         roll_back();
     }
 
@@ -70,19 +84,23 @@ Term1 *term1() {
 Term *term() {
     Term *node = (Term *) malloc(sizeof(Term));
     node->factor = factor();
-    node->term1 = term1();
+    node->term1 = term1(node->factor->systhesized);
 
+    node->systhesized = node->term1->systhesized;
     return node;
 }
 
-Expr1 *expr1() {
+Expr1 *expr1(char to_inherited) {
     char *c = get_next();
     Expr1 *node = (Expr1 *) malloc(sizeof(Expr1));
+    node->inherited = to_inherited;
     if (strcmp(c, "+") == 0 || strcmp(c, "-") == 0) {
         node->type = 1;
         node->addop = *c;
         node->term = term();
-        node->expr1 = expr1();
+        get_code(*c, node->term->systhesized, node->inherited);
+        node->expr1 = expr1(node->inherited);
+        node->systhesized = node->expr1->systhesized;
     } else {
         node->type = 2;
         roll_back();
@@ -94,8 +112,9 @@ Expr1 *expr1() {
 Expr *expr() {
     Expr *node = (Expr *) malloc(sizeof(Expr));
     node->term = term();
-    node->expr1 = expr1();
+    node->expr1 = expr1(node->term->systhesized);
 
+    node->systhesized = node->expr1->systhesized;
     return node;
 }
 

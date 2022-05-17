@@ -23,6 +23,9 @@ typedef struct FACTOR {
     char id;
     int number;
     Expr *expr;
+
+    char inherited;
+    char systhesized;
 } Factor;
 
 typedef struct TERM1 {
@@ -30,11 +33,17 @@ typedef struct TERM1 {
     char mulop;
     Factor *factor;
     Term1 *term1;
+
+    char inherited;
+    char systhesized;
 } Term1;
 
 typedef struct TERM {
     Factor *factor;
     Term1 *term1;
+
+    char inherited;
+    char systhesized;
 } Term;
 
 
@@ -43,11 +52,17 @@ typedef struct EXPR1 {
     char addop;
     Term *term;
     struct EXPR1 *expr1;
+
+    char inherited;
+    char systhesized;
 } Expr1;
 
 typedef struct EXPR {
     Term *term;
     Expr1 *expr1;
+
+    char inherited;
+    char systhesized;
 } Expr;
 
 typedef struct RELOP {
@@ -128,11 +143,11 @@ typedef struct BLOCK {
 
 Factor *factor();
 
-Term1 *term1();
+Term1 *term1(char to_inherited);
 
 Term *term();
 
-Expr1 *expr1();
+Expr1 *expr1(char to_inherited);
 
 Expr *expr();
 
