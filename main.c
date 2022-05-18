@@ -33,6 +33,7 @@ int main() {
         Block *p = block();
         dfs_block(p);
         printf("\nGet AST in mshang.ca/syntree/\n");
+        print_quadruples();
     }
     return 0;
 }

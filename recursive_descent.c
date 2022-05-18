@@ -14,6 +14,11 @@ static int index = -1;
 
 static int tmp_variable_count = 1;
 
+Quadruple quadruples[QUADRUPLE_SIZE];
+
+static int index_quadruples = 1;
+
+
 char *get_next() {
     index++;
     return pair[index].str;
@@ -31,9 +36,31 @@ void error() {
     exit(0);
 }
 
-void get_code(char op, char *operand1, char *operand2, char *result) {
+void get_code(char *op, char *operand1, char *operand2, char *result) {
+    quadruples[index_quadruples].op = op;
+    quadruples[index_quadruples].operand1 = operand1;
+    quadruples[index_quadruples].operand2 = operand2;
+    quadruples[index_quadruples].result = result;
+    index_quadruples++;
+}
 
-    printf("(%c, %s, %s, %s)\n", op, operand1, operand2, result);
+void print_quadruples() {
+    for (int i = 1; i < index_quadruples; i++) {
+        printf("%2d: (%4s, %3s, %3s, %3s)\n", i, quadruples[i].op, quadruples[i].operand1, quadruples[i].operand2,
+               quadruples[i].result);
+    }
+}
+
+char *itoa(int num) {
+    char *str = (char *) malloc(sizeof(char) * 10);
+    sprintf(str, "%d", num);
+    return str;
+}
+
+char *get_tmp_variable(int num) {
+    char *str = (char *) malloc(sizeof(char) * 10);
+    sprintf(str, "T%d", num);
+    return str;
 }
 
 Factor *factor() {
@@ -72,13 +99,13 @@ Term1 *term1(char *to_inherited) {
         node->type = 1;
         node->mulop = *c;
         node->factor = factor();
-        char buffer[5];
-        sprintf(buffer, "%s%d", "T", tmp_variable_count);
-        get_code(*c, node->factor->systhesized, node->inherited, buffer);
+
+        char *tmp_variable = get_tmp_variable(tmp_variable_count);
+        get_code(c, node->factor->systhesized, node->inherited, tmp_variable);
         tmp_variable_count++;
         node->term1 = term1(node->inherited);
         // node->systhesized = node->term1->systhesized;
-        node->systhesized = buffer;
+        node->systhesized = tmp_variable;
     } else {
         node->type = 2;
         node->systhesized = node->inherited;
@@ -105,15 +132,16 @@ Expr1 *expr1(char *to_inherited) {
         node->type = 1;
         node->addop = *c;
         node->term = term();
-        char buffer[5];
-        sprintf(buffer, "%s%d", "T", tmp_variable_count);
-        get_code(*c, node->term->systhesized, node->inherited, buffer);
+
+        char *tmp_variable = get_tmp_variable(tmp_variable_count);
+        get_code(c, node->term->systhesized, node->inherited, tmp_variable);
         tmp_variable_count++;
         node->expr1 = expr1(node->inherited);
 //        node->systhesized = node->expr1->systhesized;
-        node->systhesized = buffer;
+        node->systhesized = tmp_variable;
     } else {
         node->type = 2;
+        node->systhesized = node->inherited;
         roll_back();
     }
 
@@ -142,6 +170,11 @@ Bool *bool() {
     node->expr_1 = expr();
     node->relop = relop();
     node->expr_2 = expr();
+
+    char *tmp_variable = get_tmp_variable(tmp_variable_count);
+    get_code(node->relop->op, node->expr_1->systhesized, node->expr_2->systhesized, tmp_variable);
+    tmp_variable_count++;
+    node->systhesized = tmp_variable;
     return node;
 }
 
@@ -180,7 +213,7 @@ Stmt *stmt() {
         if (strcmp(tmp1, ";") != 0) {
             error();
         }
-        get_code('=', node->expr->systhesized, "-", c);
+        get_code("=", node->expr->systhesized, "-", c);
     } else if (strcmp(c, "if") == 0) {
         node->type = 1;
         char *tmp2 = get_next();
@@ -192,8 +225,20 @@ Stmt *stmt() {
         if (strcmp(tmp3, ")") != 0) {
             error();
         }
+        int if_index = index_quadruples;
+        get_code("bne", node->bool->systhesized, "0", "-"); // 如果与0不等，跳转到if结束
         node->stmt = stmt();
+        int end_if_index = index_quadruples;
+        get_code("goto", "-", "-", "-"); // 如果else存在 ，if语句结束要跳转到else结束
+        int else_or_stat_index = index_quadruples;
+        quadruples[if_index].result = itoa(else_or_stat_index);
         node->else_ = else_();
+        if (node->else_->type == 1) { // 如果else不存在
+            quadruples[end_if_index].result = itoa(else_or_stat_index);
+        } else { // 如果else存在
+            quadruples[end_if_index].result = itoa(index_quadruples);
+        }
+
     } else if (strcmp(c, "while") == 0) {
         node->type = 2;
         char *tmp4 = get_next();
@@ -515,7 +560,3 @@ void dfs_block(Block *block) {
 
     printf("]");
 }
-//int main() {
-//	Expr* p = expr();
-//	dfs_expr(p);
-//}

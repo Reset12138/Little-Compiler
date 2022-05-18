@@ -18,6 +18,17 @@ typedef struct DECLS1 Decls1;
 typedef struct DECLS Decls;
 typedef struct BLOCK Block;
 
+typedef struct {
+    char *op;
+    char *operand1;
+    char *operand2;
+    char *result;
+} Quadruple;
+
+# define QUADRUPLE_SIZE 200
+
+void print_quadruples();
+
 typedef struct FACTOR {
     int type;
     char id;
@@ -73,6 +84,9 @@ typedef struct BOOL {
     Expr *expr_1;
     Relop *relop;
     Expr *expr_2;
+
+    char *inherited;
+    char *systhesized;
 } Bool;
 
 typedef struct ELSE {

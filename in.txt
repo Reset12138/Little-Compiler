@@ -12,10 +12,12 @@
     int z;
     */
     x = x + y * z;
-    if(x==0)
-        x=y-1;
+    if(x>12)
+        x=y-20;
     else
-        x=y-2;
+        x=y-30;
+    if(x>21)
+        x=y-20;
     while(y==1)
         x=x+10;
 }
