@@ -245,12 +245,18 @@ Stmt *stmt() {
         if (strcmp(tmp4, "(") != 0) {
             error();
         }
+        int while_index = index_quadruples;
         node->bool = bool();
         char *tmp5 = get_next();
         if (strcmp(tmp5, ")") != 0) {
             error();
         }
+        get_code("bne", node->bool->systhesized, "0", "-"); // 如果与0不等，跳转到while结束
         node->stmt = stmt();
+        get_code("goto", "-", "-", itoa(while_index)); // 如果while结束，跳转到while开始
+        int end_while_index = index_quadruples;
+        quadruples[while_index].result = itoa(end_while_index);
+
     } else {
         node->type = 3;
         roll_back();
