@@ -225,13 +225,13 @@ Stmt *stmt() {
         if (strcmp(tmp3, ")") != 0) {
             error();
         }
-        int bne_index = index_quadruples;
-        get_code("bne", node->bool->systhesized, "0", "-"); // 如果与0不等，跳转到if结束
+        int beq_index = index_quadruples;
+        get_code("beq", node->bool->systhesized, "0", "-"); // 如果与0不等，跳转到if结束
         node->stmt = stmt();
         int end_if_index = index_quadruples;
         get_code("goto", "-", "-", "-"); // 如果else存在 ，if语句结束要跳转到else结束
         int else_or_stat_index = index_quadruples;
-        quadruples[bne_index].result = itoa(else_or_stat_index);
+        quadruples[beq_index].result = itoa(else_or_stat_index);
         node->else_ = else_();
         if (node->else_->type == 1) { // 如果else不存在
             quadruples[end_if_index].result = itoa(else_or_stat_index);
@@ -251,12 +251,12 @@ Stmt *stmt() {
         if (strcmp(tmp5, ")") != 0) {
             error();
         }
-        int bne_index = index_quadruples;
-        get_code("bne", node->bool->systhesized, "0", "-"); // 如果与0不等，跳转到while结束
+        int beq_index = index_quadruples;
+        get_code("beq", node->bool->systhesized, "0", "-"); // 如果与0不等，跳转到while结束
         node->stmt = stmt();
         get_code("goto", "-", "-", itoa(bool_index)); // 如果while结束，跳转到while开始
         int end_while_index = index_quadruples;
-        quadruples[bne_index].result = itoa(end_while_index);
+        quadruples[beq_index].result = itoa(end_while_index);
 
     } else {
         node->type = 3;
