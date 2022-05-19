@@ -4,6 +4,7 @@
 #include "recursive_descent.h"
 #include "scanner.h"
 #include "pair.h"
+#include "print_syntax_tree.h"
 
 
 int main() {
